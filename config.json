@@ -1,0 +1,12 @@
+{
+    "logs":{
+        "Persistence":null,
+	    "Application":null,
+	    "Http":null
+    },
+    "traces":{
+        "Persistence":null,
+	    "Application":null,
+	    "Http":null
+    }
+}
