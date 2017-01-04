@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <phpunit colors="true" bootstrap="vendor/autoload.php">
+  <const name="PHP_BINARY" value="php"/>
   <testsuites>
     <testsuite name="php-platform/errors">
       <directory suffix=".php">./tests</directory>

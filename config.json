@@ -2,11 +2,13 @@
     "logs":{
         "Persistence":null,
 	    "Application":null,
-	    "Http":null
+	    "Http":null,
+	    "System":null
     },
     "traces":{
         "Persistence":null,
 	    "Application":null,
-	    "Http":null
+	    "Http":null,
+	    "System":null
     }
 }

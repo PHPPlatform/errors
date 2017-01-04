@@ -2,42 +2,62 @@
 
 namespace PhpPlatform\Errors;
 
-use PhpPlatform\Errors\Exceptions\Application\ProgrammingError;
-use PhpPlatform\Errors\Exceptions\Application\Warning;
+
+use PhpPlatform\Errors\Exceptions\System\SystemError;
+use PhpPlatform\Errors\Exceptions\System\SystemWarning;
 
 final class ErrorHandler {
 	
-	static function handleError( $severity , $message , $errfile = null, $errline = null, array $errcontext = null ){
-		$errorException = new \ErrorException($message,0,$severity,$errfile,$errline);
-		switch ($severity){
-			case E_ERROR:
-  		    case E_PARSE:
-			case E_CORE_ERROR:
-			case E_COMPILE_ERROR:
-			case E_USER_ERROR:
-			case E_RECOVERABLE_ERROR:
-				throw new ProgrammingError($message,$errorException);
-				break;
-			case E_WARNING:
-			case E_NOTICE:
-			case E_CORE_WARNING:
-			case E_COMPILE_WARNING:
-			case E_USER_WARNING:
-			case E_USER_NOTICE:
-			case E_STRICT:
-			case E_DEPRECATED:
-			case E_USER_DEPRECATED:
-				new Warning($message,$errorException);
-				break;
-			default:
-				throw new ProgrammingError($message,$errorException);
-		}
-		return true;
-	}
-	
-	static function handle(){
+	private static $isHandleRegistered = false;
+		
+	static function handleError(){
 		error_reporting(E_ALL); // enable all error reporting
-		set_error_handler(array(get_class(),'handleError'));
+		ini_set('display_errors', 'false');
+		
+		if(self::$isHandleRegistered){
+			return;
+		}
+		
+		set_error_handler(function ( $severity , $message , $errfile = null, $errline = null, array $errcontext = null ){
+			switch ($severity){
+				case E_ERROR:
+	  		    case E_PARSE:
+				case E_CORE_ERROR:
+				case E_COMPILE_ERROR:
+				case E_USER_ERROR:
+				case E_RECOVERABLE_ERROR:
+					throw new SystemError($message,$severity,$errfile,$errline);
+					break;
+				case E_WARNING:
+				case E_NOTICE:
+				case E_CORE_WARNING:
+				case E_COMPILE_WARNING:
+				case E_USER_WARNING:
+				case E_USER_NOTICE:
+				case E_STRICT:
+				case E_DEPRECATED:
+				case E_USER_DEPRECATED:
+					// just log the warning and continue
+					new SystemWarning($message,$severity,$errfile,$errline);
+					break;
+				default:
+					throw new SystemError($message,$severity,$errfile,$errline);
+			}
+			return true;
+		});
+		
+		register_shutdown_function(function(){
+			$error = error_get_last();
+			if(is_array($error) && ($error["type"] == E_ERROR || $error["type"] == E_PARSE)){
+				if(ob_get_contents() !== false){
+					ob_clean();
+				}
+				new SystemError($error["message"], $error["type"], $error["file"], $error["line"]);
+			}
+		});
+		
+		self::$isHandleRegistered = true;
+		
 	}
 	
 	

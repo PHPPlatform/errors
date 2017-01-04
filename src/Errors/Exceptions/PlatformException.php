@@ -13,13 +13,14 @@ abstract class PlatformException extends \Exception {
 		
 		// logging
 		$time = date('Y-m-d H:i:s');
+		$logMessage = "[$time]$prefix ".$this->getLogMessage($this);
 		
 		$log    = Settings::getSettings(self::$thisPackageName,"logs.$name");
 		if(isset($log)){
 			if(!is_dir(dirname($log))){
 				mkdir(dirname($log),"0777",true);
 			}
-			error_log("[$time]".$prefix.$message."\n", 3, $log);
+			error_log("$logMessage\n", 3, $log);
 		}
 		
 		$trace    = Settings::getSettings(self::$thisPackageName,"traces.$name");
@@ -27,8 +28,25 @@ abstract class PlatformException extends \Exception {
 			if(!is_dir(dirname($trace))){
 				mkdir(dirname($trace),"0777",true);
 			}
-			error_log("[$time]".$prefix."\n".$this->getTraceAsString()."\n-----------------------------\n\n", 3, $trace);
+			$causedBy = "";
+			$previousException = $this->getPrevious();
+			while ($previousException != null){
+				$causedBy .= $this->getLogMessage($previousException)."\n";
+				$previousException = $previousException->getPrevious();
+			}
+			if($causedBy != ""){
+				$causedBy = "Caused By .... \n".$causedBy;
+			}
+			
+			error_log("$logMessage\n".$this->getTraceAsString()."\n $causedBy -----------------------------\n\n", 3, $trace);
 		}
-		
+	}
+	
+	protected function getLogMessage(\Exception $e){
+		$message = $e->getMessage();
+		$class = get_class($e);
+		$file  = $e->getFile();
+		$line  = $e->getLine();
+		return "$message : $class ($file ($line))";
 	}
 }
