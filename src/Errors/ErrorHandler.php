@@ -8,15 +8,11 @@ use PhpPlatform\Errors\Exceptions\System\SystemWarning;
 
 final class ErrorHandler {
 	
-	private static $isHandleRegistered = false;
+	private static $lastError = null;
 		
 	static function handleError(){
 		error_reporting(E_ALL); // enable all error reporting
 		ini_set('display_errors', 'false');
-		
-		if(self::$isHandleRegistered){
-			return;
-		}
 		
 		set_error_handler(function ( $severity , $message , $errfile = null, $errline = null, array $errcontext = null ){
 			switch ($severity){
@@ -48,6 +44,10 @@ final class ErrorHandler {
 		
 		register_shutdown_function(function(){
 			$error = error_get_last();
+			if(self::$lastError == $error){
+				return;
+			}
+			self::$lastError = $error;
 			if(is_array($error) && ($error["type"] == E_ERROR || $error["type"] == E_PARSE)){
 				if(ob_get_contents() !== false){
 					ob_clean();
@@ -55,8 +55,6 @@ final class ErrorHandler {
 				new SystemError($error["message"], $error["type"], $error["file"], $error["line"]);
 			}
 		});
-		
-		self::$isHandleRegistered = true;
 		
 	}
 	

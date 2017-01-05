@@ -34,7 +34,41 @@ class TestErrorHandler extends TestCase {
 		}
 	}
 	
-	public function testErrorHandlingForUserError(){
+	public function testErrorHandlingFor_E_Warning(){
+	
+		ErrorHandler::handleError();
+		MockSettings::setSettings(self::$thisPackageName, "logs.System", $this->logFile);
+	
+		$isException = false;
+		try{
+			$f = fopen("nonexistingfile", "r"); // this generates E_Warning
+		}catch (PlatformException $e){
+			$isException = true;
+		}
+		parent::assertTrue(!$isException);
+		$log = file_get_contents($this->logFile);
+		parent::assertContains('[S][E_WARNING] fopen(nonexistingfile): failed to open stream: No such file or directory : PhpPlatform\Errors\Exceptions\System\SystemWarning', $log);
+	
+	}
+	
+	public function testErrorHandlingFor_E_Notice(){
+	
+		ErrorHandler::handleError();
+		MockSettings::setSettings(self::$thisPackageName, "logs.System", $this->logFile);
+	
+		$isException = false;
+		try{
+			$arr = array("username"=>"myUserName");
+			$arr[username]; // this generates E_NOTICE
+		}catch (PlatformException $e){
+			$isException = true;
+		}
+		parent::assertTrue(!$isException);
+		$log = file_get_contents($this->logFile);
+		parent::assertContains('[S][E_NOTICE] Use of undefined constant username - assumed \'username\' : PhpPlatform\Errors\Exceptions\System\SystemWarning', $log);
+	}
+	
+	public function testErrorHandlingForUserWarning(){
 		
 		ErrorHandler::handleError();
 		MockSettings::setSettings(self::$thisPackageName, "logs.System", $this->logFile);
@@ -47,33 +81,14 @@ class TestErrorHandler extends TestCase {
 		}
 		parent::assertTrue(!$isException);
 		$log = file_get_contents($this->logFile);
-		parent::assertContains('[S][2] Trigger Warning : PhpPlatform\Errors\Exceptions\System\SystemWarning', $log);
+		parent::assertContains('[S][E_USER_WARNING] Trigger Warning : PhpPlatform\Errors\Exceptions\System\SystemWarning', $log);
 		
 	}
-	
-	/* public function testErrorHandlingForNotice(){
-	
-		ErrorHandler::handleError();
-		MockSettings::setSettings(self::$thisPackageName, "logs.System", $this->logFile);
-	
-		$isException = false;
-		try{
-			$arr = array('username'=>"myUserName");
-			$arr[username]; /// generats E_NOTICE
-		}catch (PlatformException $e){
-			$isException = true;
-		}
-		parent::assertTrue(!$isException);
-		$log = file_get_contents($this->logFile);
-		echo $log;
-		//parent::assertContains('[S][2] Trigger Warning : PhpPlatform\Errors\Exceptions\System\SystemWarning', $log);
-	
-	} */
 	
 	/**
 	 * @dataProvider systemExceptionsProvider
 	 */
-	public function testErrorHandlingForSystemExceptions($erroneousSourceCode,$expectedError){
+	public function testErrorHandlingForSystemExceptions($erroneousSourceCode,$expectedError,$expectedOutput){
 	
 		$classLoaderReflection = new \ReflectionClass(new ClassLoader());
 		$vendorDir = dirname(dirname($classLoaderReflection->getFileName()));
@@ -100,7 +115,7 @@ class TestErrorHandler extends TestCase {
 		
 		$output = file_get_contents($outputFile);
 		
-		parent::assertEquals('',trim($output));
+		parent::assertEquals($expectedOutput,trim($output));
 	}
 	
 	public function systemExceptionsProvider(){
@@ -108,13 +123,10 @@ class TestErrorHandler extends TestCase {
 		$parseErrorFile = tempnam(sys_get_temp_dir(), "PAR");
 		file_put_contents($parseErrorFile, "<?php \n noSemicolon()");
 		
-		$noticeErrorFile = tempnam(sys_get_temp_dir(), "PAR");
-		file_put_contents($noticeErrorFile, '<?php \n noSemicolon()');
-		
 		return array(
-				array('undefinedFunction();','[S][1] Call to undefined function undefinedFunction() : PhpPlatform\Errors\Exceptions\System\SystemError'),
-				array("include_once '$parseErrorFile';",'[S][1] syntax error, unexpected end of file : PhpPlatform\Errors\Exceptions\System\SystemError'),
-				array('$arr = array("username"=>"myUserName");echo $arr[username];','[S][2] Use of undefined constant username - assumed \'username\' : PhpPlatform\Errors\Exceptions\System\SystemWarning')
+				array('undefinedFunction();','[S][E_ERROR] Call to undefined function undefinedFunction() : PhpPlatform\Errors\Exceptions\System\SystemError',''),
+				array("include_once '$parseErrorFile';",'[S][E_PARSE] syntax error, unexpected end of file : PhpPlatform\Errors\Exceptions\System\SystemError',''),
+				array('require "nonexistingFile";echo $arr[username];','[S][E_WARNING] require(nonexistingFile): failed to open stream: No such file or directory : PhpPlatform\Errors\Exceptions\System\SystemWarning','')
 		);
 	}
 	
