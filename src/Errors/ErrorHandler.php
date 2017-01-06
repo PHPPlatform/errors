@@ -44,10 +44,10 @@ final class ErrorHandler {
 		
 		register_shutdown_function(function(){
 			$error = error_get_last();
-			if(self::$lastError == $error){
+			if(ErrorHandler::$lastError == $error){
 				return;
 			}
-			self::$lastError = $error;
+			ErrorHandler::$lastError = $error;
 			if(is_array($error) && 
 					($error["type"] == E_ERROR || $error["type"] == E_PARSE || $error["type"] == E_CORE_ERROR || $error["type"] == E_COMPILE_ERROR)){
 				if(ob_get_contents() !== false){
