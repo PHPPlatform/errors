@@ -3,12 +3,11 @@
 namespace PHPPlatform\tests\Errors\Exceptions;
 
 use PhpPlatform\Mock\Config\MockSettings;
-use PHPUnit\Framework\TestCase;
 use PhpPlatform\Config\SettingsCache;
 use PhpPlatform\Errors\Exceptions\Application\Debug;
 use PhpPlatform\Errors\Exceptions\Persistence\BadQueryException;
 
-class TestException extends TestCase {
+class TestException extends \PHPUnit_Framework_TestCase {
 	
 	static $thisPackageName = 'php-platform/errors';
 	private $logFile = "";
@@ -23,8 +22,6 @@ class TestException extends TestCase {
 		$this->traceFile = tempnam(sys_get_temp_dir(), "MOCK");
 		//clear the file
 		file_put_contents($this->traceFile, '');
-		
-		
 		
 	}
 	

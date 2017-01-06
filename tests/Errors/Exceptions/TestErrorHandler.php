@@ -3,13 +3,12 @@
 namespace PHPPlatform\tests\Errors\Exceptions;
 
 use PhpPlatform\Config\SettingsCache;
-use PHPUnit\Framework\TestCase;
 use PhpPlatform\Errors\ErrorHandler;
 use PhpPlatform\Mock\Config\MockSettings;
 use PhpPlatform\Errors\Exceptions\PlatformException;
 use Composer\Autoload\ClassLoader;
 
-class TestErrorHandler extends TestCase {
+class TestErrorHandler extends \PHPUnit_Framework_TestCase {
 	
 	static $thisPackageName = 'php-platform/errors';
 	private $logFile = "";
