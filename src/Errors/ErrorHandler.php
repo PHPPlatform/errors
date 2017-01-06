@@ -48,7 +48,8 @@ final class ErrorHandler {
 				return;
 			}
 			self::$lastError = $error;
-			if(is_array($error) && ($error["type"] == E_ERROR || $error["type"] == E_PARSE)){
+			if(is_array($error) && 
+					($error["type"] == E_ERROR || $error["type"] == E_PARSE || $error["type"] == E_CORE_ERROR || $error["type"] == E_COMPILE_ERROR)){
 				if(ob_get_contents() !== false){
 					ob_clean();
 				}
