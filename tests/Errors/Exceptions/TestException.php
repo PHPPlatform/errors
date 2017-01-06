@@ -33,7 +33,6 @@ class TestException extends \PHPUnit_Framework_TestCase {
 		
 		$logMesage = file_get_contents($this->logFile);
 		
-		$this->assertEquals(173,strlen($logMesage));
 		$this->assertContains('[A] Testing Logging : PhpPlatform\Errors\Exceptions\Application\Debug', $logMesage);
 		
 	}

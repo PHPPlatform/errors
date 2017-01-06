@@ -91,6 +91,7 @@ class TestErrorHandler extends \PHPUnit_Framework_TestCase {
 	
 	
 	/**
+	 * @requires PHP 5.4
 	 * @dataProvider systemExceptionsProvider
 	 */
 	public function testErrorHandlingForSystemExceptions($erroneousSourceCode,$expectedError,$expectedOutput){
