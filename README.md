@@ -42,7 +42,7 @@ This Package mainly solves 3 problems
 Configurations available for this Package
 > This Configuration is based on [PHPPlatform/config][PHPPlatformConfig]
 
-``` JSON
+``` Javascript
 {
     "logs":{  // log file paths for each category of exceptions
         "Persistence":null, 
