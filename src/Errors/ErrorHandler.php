@@ -7,8 +7,6 @@ use PhpPlatform\Errors\Exceptions\System\SystemError;
 use PhpPlatform\Errors\Exceptions\System\SystemWarning;
 
 final class ErrorHandler {
-	
-	private static $lastError = null;
 		
 	static function handleError(){
 		error_reporting(E_ALL); // enable all error reporting
@@ -44,10 +42,10 @@ final class ErrorHandler {
 		
 		register_shutdown_function(function(){
 			$error = error_get_last();
-			if(ErrorHandler::$lastError == $error){
+			if($_ENV['lastError'] == $error){
 				return;
 			}
-			ErrorHandler::$lastError = $error;
+			$_ENV['lastError'] = $error;
 			if(is_array($error) && 
 					($error["type"] == E_ERROR || $error["type"] == E_PARSE || $error["type"] == E_CORE_ERROR || $error["type"] == E_COMPILE_ERROR)){
 				if(ob_get_contents() !== false){
