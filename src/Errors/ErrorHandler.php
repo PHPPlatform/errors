@@ -42,7 +42,7 @@ final class ErrorHandler {
 		
 		register_shutdown_function(function(){
 			$error = error_get_last();
-			if($_ENV['lastError'] == $error){
+			if(array_key_exists('lastError', $_ENV) && $_ENV['lastError'] == $error){
 				return;
 			}
 			$_ENV['lastError'] = $error;
