@@ -129,8 +129,13 @@ class TestErrorHandler extends \PHPUnit_Framework_TestCase {
 		$parseErrorFile = tempnam(sys_get_temp_dir(), "PAR");
 		file_put_contents($parseErrorFile, "<?php \n noSemicolon()");
 		
+		$errorUpdateforPHP7 = '[S][E_ERROR] Call to undefined function undefinedFunction() : PhpPlatform\Errors\Exceptions\System\SystemError';
+		if(strpos(phpversion(), "7.") === 0){
+			$errorUpdateforPHP7 = 'Call to undefined function undefinedFunction()';
+		}
+		
 		return array(
-				array('undefinedFunction();','[S][E_ERROR] Call to undefined function undefinedFunction() : PhpPlatform\Errors\Exceptions\System\SystemError',''),
+				array('undefinedFunction();',$errorUpdateforPHP7,''),
 				array("include_once '$parseErrorFile';",'[S][E_PARSE] syntax error, unexpected end of file : PhpPlatform\Errors\Exceptions\System\SystemError','')
 		);
 	}
