@@ -15,7 +15,7 @@ class TestErrorHandler extends \PHPUnit_Framework_TestCase {
 	private $traceFile = "";
 	
 	protected function setUp(){
-		SettingsCache::reset();
+		SettingsCache::getInstance()->reset();
 		
 		$this->logFile = tempnam(sys_get_temp_dir(), "MOCK");
 		file_put_contents($this->logFile, '');
