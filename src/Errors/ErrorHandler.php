@@ -6,6 +6,18 @@ namespace PhpPlatform\Errors;
 use PhpPlatform\Errors\Exceptions\System\SystemError;
 use PhpPlatform\Errors\Exceptions\System\SystemWarning;
 
+/**
+ * @todo  solve : autoloader will not load Custom classes within spl_autoload_register
+ * see Example 4 in http://php.net/manual/en/language.oop5.autoload.php
+ * 
+ * any system error or warning will invoke the set_error_handler callback, and if classes SystemError or SystemWarning used in this call back are not loaded, then php will fail to load this classes in callback 
+ * 
+ * So including these classes manually
+ * 
+ */
+include_once __DIR__.'/Exceptions/System/SystemError.php';
+include_once __DIR__.'/Exceptions/System/SystemWarning.php';
+
 final class ErrorHandler {
 		
 	static function handleError(){
