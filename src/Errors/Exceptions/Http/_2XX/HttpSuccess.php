@@ -6,7 +6,7 @@ use PhpPlatform\Errors\Exceptions\Http\HttpException;
 
 abstract class HttpSuccess extends HttpException {
 	
-	public function __construct($message = null, $code = null, $previous = null) {
-		parent::__construct ( $message, $code , $previous );
+	public function __construct($body = null, $message = null, $code = null, $previous = null) {
+		parent::__construct ($body, $message, $code , $previous );
 	}
 }
