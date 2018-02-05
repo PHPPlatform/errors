@@ -5,10 +5,7 @@ namespace PhpPlatform\Errors\Exceptions\Http\_5XX;
 use PhpPlatform\Errors\Exceptions\Http\_5XX\HttpServerExceptions;
 
 final class InternalServerError extends HttpServerExceptions {
-	public function __construct($message = null, $previous = null) {
-		if(!isset($message)){
-			$message = "Internal Server Error";
-		}
-		parent::__construct ( $message, 500, $previous );
+	public function __construct($body = null, $previous = null) {
+		parent::__construct ( $body, "Internal Server Error", 500, $previous );
 	}
 }
