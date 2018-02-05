@@ -68,8 +68,10 @@ class TestErrorHandler extends \PHPUnit_Framework_TestCase {
 			},false,'[S][E_WARNING] fopen(nonexistingfile): failed to open stream: No such file or directory : PhpPlatform\Errors\Exceptions\System\SystemWarning'),
 			array(function(){
 				$arr = array("username"=>"myUserName");
-				$arr[username];
-			},false,'[S][E_NOTICE] Use of undefined constant username - assumed \'username\' : PhpPlatform\Errors\Exceptions\System\SystemWarning'),
+				if($i == 1){
+					echo "success";
+				}
+			},false,'[S][E_NOTICE] Undefined variable: i : PhpPlatform\Errors\Exceptions\System\SystemWarning'),
 			array(function(){
 				trigger_error("Trigger Warning",E_USER_WARNING);
 			},false,'[S][E_USER_WARNING] Trigger Warning : PhpPlatform\Errors\Exceptions\System\SystemWarning'),
