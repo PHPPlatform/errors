@@ -5,10 +5,7 @@ namespace PhpPlatform\Errors\Exceptions\Http\_3XX;
 use PhpPlatform\Errors\Exceptions\Http\_3XX\HttpRedirection;
 
 final class MovedPermanently extends HttpRedirection {
-	public function __construct($message = null, $previous = null) {
-		if(!isset($message)){
-			$message = "Moved Permanently";
-		}
-		parent::__construct ( $message, 301, $previous );
+	public function __construct($body = null, $previous = null) {
+		parent::__construct ( $body, "Moved Permanently", 301, $previous );
 	}
 }
